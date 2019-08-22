@@ -1,6 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const resolvers = require('./resolvers');
 const typeDefs = require('./typeDefs');
 
@@ -14,7 +15,9 @@ const startServer = async () => {
 
 	server.applyMiddleware({ app });
 
-	await mongoose.connect('mongodb://admin:test123@ds211708.mlab.com:11708/league', { useNewUrlParser: true });
+	await mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds211708.mlab.com:11708/league`, {
+		useNewUrlParser: true
+	});
 	mongoose.connection.once('open', () => {
 		console.log('conneted to database');
 	});
