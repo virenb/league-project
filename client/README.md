@@ -1,0 +1,1 @@
+Full stack app (React, GraphQL (Apollo Client + Server), Mongoose, Express, MongoDB)
