@@ -4,11 +4,13 @@ const typeDefs = gql`
 	type Query {
 		teams: [Team!]!
 		users: [User!]!
+		currentUser: User!
 	}
 
 	type Team {
 		id: ID!
 		name: String!
+		captain: User!
 	}
 
 	type User {
@@ -16,15 +18,16 @@ const typeDefs = gql`
 		name: String!
 		email: String!
 		password: String!
+		team: Team
 	}
 
 	type Mutation {
 		createTeam(name: String!): Team!
 		register(email: String!, name: String!, password: String!): User!
-		login(email: String!, password: String!): LoginResponse!
+		login(email: String!, password: String!): AuthPayload
 	}
 
-	type LoginResponse {
+	type AuthPayload {
 		token: String
 		user: User
 	}

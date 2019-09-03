@@ -1,16 +1,37 @@
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const resolvers = require('./resolvers');
 const typeDefs = require('./typeDefs');
+
+const getUser = (token) => {
+	try {
+		if (token) {
+			return jwt.verify(token, 'my-secret-from-env-file-in-prod');
+		}
+		return null;
+	} catch (err) {
+		return null;
+	}
+};
 
 const startServer = async () => {
 	const app = express();
 
 	const server = new ApolloServer({
 		typeDefs,
-		resolvers
+		resolvers,
+		context: ({ req }) => {
+			const tokenWithBearer = req.headers.authorization || '';
+			const token = tokenWithBearer.split(' ')[1];
+			const user = getUser(token);
+
+			return {
+				user
+			};
+		}
 	});
 
 	server.applyMiddleware({ app });
