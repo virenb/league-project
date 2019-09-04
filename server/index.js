@@ -9,7 +9,7 @@ const typeDefs = require('./typeDefs');
 const getUser = (token) => {
 	try {
 		if (token) {
-			return jwt.verify(token, 'my-secret-from-env-file-in-prod');
+			return jwt.verify(token, process.env.JWT_SECRET);
 		}
 		return null;
 	} catch (err) {
@@ -24,8 +24,7 @@ const startServer = async () => {
 		typeDefs,
 		resolvers,
 		context: ({ req }) => {
-			const tokenWithBearer = req.headers.authorization || '';
-			const token = tokenWithBearer.split(' ')[1];
+			const token = req.headers.authorization || '';
 			const user = getUser(token);
 
 			return {

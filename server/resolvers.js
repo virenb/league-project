@@ -2,16 +2,17 @@ const Team = require('./models/Team');
 const User = require('./models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const resolvers = {
 	Query: {
 		teams: () => Team.find(),
 		users: () => User.find(),
-		currentUser: (_, { user }) => {
+		currentUser: async (_, { user }) => {
 			if (!user) {
 				throw new Error('Not Authenticated');
 			}
-			return user.findById({ id: user.id });
+			return await User.findById(user.id);
 		}
 	},
 	Mutation: {
@@ -42,7 +43,7 @@ const resolvers = {
 					id: user.id,
 					email: user.email
 				},
-				'my-secret-from-env-file-in-prod',
+				process.env.JWT_SECRET,
 				{
 					expiresIn: '30d' // token will expire in 30days
 				}
